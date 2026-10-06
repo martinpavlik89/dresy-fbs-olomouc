@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ověření čísla florbalového dresu</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+    }
+    .jersey-mesh {
+      background-image: radial-gradient(rgba(255, 255, 255, 0.15) 1.5px, transparent 1.5px);
+      background-size: 10px 10px;
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col antialiased selection:bg-cyan-500 selection:text-slate-950">
+
+  <header class="border-b border-slate-800/80 bg-slate-900/90 backdrop-blur sticky top-0 z-40">
+    <div class="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-cyan-400 to-emerald-400 flex items-center justify-center text-slate-950 font-black text-xl shadow-lg shadow-cyan-500/20">
+          <i class="fa-solid fa-circle-dot"></i>
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-extrabold text-white leading-tight">
+            Florbalový dres <span class="text-cyan-400 font-black">#KONTROLA</span>
+          </h1>
+          <p class="text-xs text-slate-400">Ověření dostupnosti čísla pro novou sezónu</p>
+        </div>
+      </div>
+      
+      <a href="#pravidla" class="text-xs font-semibold text-slate-300 hover:text-cyan-400 transition flex items-center gap-1.5 bg-slate-800/80 px-3 py-1.5 rounded-full border border-slate-700/60">
+        <i class="fa-regular fa-circle-question text-cyan-400"></i>
+        <span>Proč i okolní ročníky?</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="flex-1 max-w-4xl w-full mx-auto px-4 py-6 sm:py-8 space-y-6">
+
+    <!-- Welcoming banner for parents and kids -->
+    <div class="bg-gradient-to-r from-cyan-950/40 via-slate-900 to-slate-900 border border-cyan-800/40 rounded-3xl p-5 sm:p-6 shadow-xl relative overflow-hidden">
+      <div class="relative z-10 max-w-2xl">
+        <span class="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-cyan-400 bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-500/30 mb-2">
+          <i class="fa-solid fa-bolt"></i> Rychlé ověření pro hráče a rodiče
+        </span>
+        <h2 class="text-xl sm:text-2xl font-black text-white">
+          Vyber si své florbalové číslo dresu
+        </h2>
+        <p class="text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed">
+          Zadej svůj <strong>ročník narození</strong> a <strong>číslo</strong>, které by se ti líbilo. Systém okamžitě zkontroluje tvůj ročník a <strong>2 sousední ročníky</strong> (starší i mladší), se kterými budeš nastupovat v jedné věkové kategorii.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+      
+      <!-- Interactive Input Form (7 Cols) -->
+      <div class="md:col-span-7 bg-slate-900/90 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-xl space-y-5">
+        
+        <!-- Step 1: Birth year -->
+        <div>
+          <label for="birth-year" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+            1. Tvůj ročník narození
+          </label>
+          <div class="relative">
+            <select id="birth-year" onchange="runCheck()" class="w-full bg-slate-950 border-2 border-slate-700 rounded-2xl px-4 py-3 text-base font-bold text-white focus:outline-none focus:border-cyan-400 transition cursor-pointer appearance-none">
+              <!-- Dynamically populated or common youth years -->
+              <option value="2017">2017 (Přípravka)</option>
+              <option value="2016">2016 (Přípravka)</option>
+              <option value="2015">2015 (Elévové)</option>
+              <option value="2014">2014 (Elévové)</option>
+              <option value="2013">2013 (Mladší žáci)</option>
+              <option value="2012" selected>2012 (Mladší žáci)</option>
+              <option value="2011">2011 (Starší žáci)</option>
+              <option value="2010">2010 (Starší žáci)</option>
+              <option value="2009">2009 (Dorostenci)</option>
+              <option value="2008">2008 (Dorostenci)</option>
+              <option value="2007">2007 (Junioři)</option>
+            </select>
+            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-cyan-400">
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
+          </div>
+          <p id="checked-years-hint" class="text-[11px] text-slate-400 mt-1.5 flex items-center gap-1">
+            <i class="fa-solid fa-arrows-split-up-and-left text-cyan-400"></i>
+            <span>Kontrolujeme ročníky: <strong>2010, 2011, 2012, 2013, 2014</strong></span>
+          </p>
+        </div>
+
+        <!-- Step 2: Desired number -->
+        <div>
+          <label for="jersey-num" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+            2. Číslo dresu (1 až 99)
+          </label>
+          <div class="flex items-center gap-3">
+            <button type="button" onclick="adjustNumber(-1)" class="w-12 h-12 rounded-2xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-black text-xl flex items-center justify-center transition border border-slate-700">
+              -
+            </button>
+            <input type="number" id="jersey-num" min="1" max="99" value="17" oninput="runCheck()" class="flex-1 bg-slate-950 border-2 border-slate-700 rounded-2xl py-2.5 text-center text-3xl font-black text-cyan-400 focus:outline-none focus:border-cyan-400 transition font-mono">
+            <button type="button" onclick="adjustNumber(1)" class="w-12 h-12 rounded-2xl bg-slate-800 hover:bg-slate-700 active:scale-95 text-white font-black text-xl flex items-center justify-center transition border border-slate-700">
+              +
+            </button>
+          </div>
+        </div>
+
+        <!-- Step 3: Player Name (Optional, for fun on jersey) -->
+        <div>
+          <label for="player-name" class="block text-xs font-bold uppercase tracking-wider text-slate-300 mb-1.5">
+            3. Jméno nebo Příjmení na dres <span class="text-slate-500 font-normal lowercase">(volitelné)</span>
+          </label>
+          <input type="text" id="player-name" maxlength="15" placeholder="např. NOVÁK" value="NOVÁK" oninput="runCheck()" class="w-full bg-slate-950 border-2 border-slate-700 rounded-2xl px-4 py-2.5 text-sm font-semibold uppercase text-white placeholder-slate-600 focus:outline-none focus:border-cyan-400 transition">
+        </div>
+
+        <!-- Quick suggestion pills of free numbers -->
+        <div class="pt-2 border-t border-slate-800/80">
+          <span class="text-xs font-bold text-slate-400 block mb-2">
+            💡 Tipy na zcela volná čísla v tvém ročníku:
+          </span>
+          <div id="quick-suggestions" class="flex flex-wrap gap-2">
+            <!-- Dynamically populated buttons -->
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Live Jersey Preview & Big Status (5 Cols) -->
+      <div class="md:col-span-5 space-y-4">
+        
+        <!-- Big Status Banner -->
+        <div id="status-card" class="rounded-3xl p-5 border-2 transition-all duration-300 text-center shadow-xl">
+          <!-- Filled dynamically by JavaScript -->
+        </div>
+
+        <!-- Graphic Florbal Jersey Mockup -->
+        <div class="bg-gradient-to-b from-slate-900 to-slate-950 border border-slate-800 rounded-3xl p-5 flex flex-col items-center justify-center relative overflow-hidden shadow-xl min-h-[300px]">
+          <div class="jersey-mesh absolute inset-0 opacity-20 pointer-events-none"></div>
+
+          <!-- Jersey SVG Element -->
+          <div class="relative w-48 h-56 flex items-center justify-center filter drop-shadow-[0_10px_20px_rgba(0,0,0,0.6)]">
+            <svg class="w-full h-full" viewBox="0 0 240 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Jersey Body -->
+              <path d="M60 20 L95 45 C102 52 138 52 145 45 L180 20 L235 60 L205 105 L180 92 L180 240 C180 248 174 254 166 254 L74 254 C66 254 60 248 60 240 L60 92 L35 105 L5 60 Z" 
+                    fill="url(#jerseyGradient)" stroke="#06b6d4" stroke-width="2.5" stroke-linejoin="round" />
+              <!-- Shoulder strips -->
+              <path d="M60 20 L95 45 L105 38 L70 14 Z" fill="#06b6d4" opacity="0.6"/>
+              <path d="M180 20 L145 45 L135 38 L170 14 Z" fill="#06b6d4" opacity="0.6"/>
+              <!-- Side panels -->
+              <path d="M60 92 L75 92 L75 254 L60 254 Z" fill="#082f49" opacity="0.8"/>
+              <path d="M180 92 L165 92 L165 254 L180 254 Z" fill="#082f49" opacity="0.8"/>
+              <!-- Collar -->
+              <path d="M95 45 C105 60 135 60 145 45 C135 50 105 50 95 45 Z" fill="#38bdf8"/>
+              
+              <!-- Florbal ball mini icon -->
+              <circle cx="120" cy="74" r="7" stroke="#ffffff" stroke-width="1.2" fill="none" opacity="0.85"/>
+              <circle cx="118" cy="72" r="1.2" fill="#fff" opacity="0.9"/>
+              <circle cx="122" cy="72" r="1.2" fill="#fff" opacity="0.9"/>
+              <circle cx="120" cy="76" r="1.2" fill="#fff" opacity="0.9"/>
+
+              <defs>
+                <linearGradient id="jerseyGradient" x1="20" y1="20" x2="220" y2="250" gradientUnits="userSpaceOnUse">
+                  <stop stop-color="#09182a" />
+                  <stop offset="0.6" stop-color="#1e293b" />
+                  <stop offset="1" stop-color="#09182a" />
+                </linearGradient>
+              </defs>
+            </svg>
+
+            <!-- Jersey Overlaid Text -->
+            <div class="absolute inset-0 flex flex-col items-center justify-center pt-9 pointer-events-none select-none">
+              <div id="jersey-display-name" class="text-xs font-black tracking-widest text-cyan-300 drop-shadow uppercase px-2 truncate max-w-[140px]">
+                NOVÁK
+              </div>
+              <div id="jersey-display-num" class="text-6xl font-black tracking-tight text-white drop-shadow-[0_4px_10px_rgba(0,0,0,0.9)] font-mono leading-none mt-1">
+                17
+              </div>
+              <div class="text-[9px] font-bold text-slate-400 mt-2 tracking-widest uppercase">
+                FLORBALOVÝ KLUB
+              </div>
+            </div>
+          </div>
+
+          <!-- Coach message copy button -->
+          <button id="copy-msg-btn" onclick="copyCoachMessage()" class="mt-4 w-full py-2.5 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 active:scale-98 text-xs font-bold text-cyan-300 border border-slate-700 flex items-center justify-center gap-2 transition">
+            <i class="fa-solid fa-comment-dots text-emerald-400"></i>
+            <span>Zkopírovat zprávu pro trenéra</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="bg-slate-900/90 border border-slate-800 rounded-3xl p-5 sm:p-6 shadow-xl">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800 pb-4 mb-4">
+        <div>
+          <h3 class="text-base font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-table-cells text-cyan-400"></i>
+            Přehled všech čísel (1 až 99)
+          </h3>
+          <p class="text-xs text-slate-400">
+            Klikni na jakékoli číslo v tabulce pro okamžité ověření.
+          </p>
+        </div>
+
+        <!-- Simple legend -->
+        <div class="flex items-center gap-4 text-xs font-medium">
+          <div class="flex items-center gap-1.5">
+            <span class="w-3.5 h-3.5 rounded-lg bg-emerald-500/20 border border-emerald-500/60"></span>
+            <span class="text-emerald-300 font-bold">🟢 Volné (Můžeš vybrat)</span>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <span class="w-3.5 h-3.5 rounded-lg bg-rose-500/20 border border-rose-500/60"></span>
+            <span class="text-rose-300 font-bold">🔴 Obsazeno (Nelze vybrat)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Numbers grid (10 cols on tablet/desktop) -->
+      <div id="numbers-grid" class="grid grid-cols-5 sm:grid-cols-10 gap-1.5 sm:gap-2">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+
+    <div id="pravidla" class="bg-slate-900/50 border border-slate-800/80 rounded-3xl p-6 text-slate-300 text-xs sm:text-sm space-y-3 leading-relaxed">
+      <h3 class="text-base font-bold text-white flex items-center gap-2">
+        <i class="fa-solid fa-circle-info text-cyan-400"></i>
+        Pravidlo dvou ročníků (&plusmn;2 roky)
+      </h3>
+      <p>
+        V mládežnickém florbale se kategorie v zápasech a na turnajích prolínají. Například hráč ročníku <strong>2011</strong> 
+        nastupuje se spoluhráči z ročníků <strong>2010 a 2012</strong>, a při střídání kategorií se potkává i s ročníky <strong>2009 a 2013</strong>. 
+        Proto nesmí mít stejné číslo nikdo z těchto 5 ročníků.
+      </p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+        <div class="p-3.5 rounded-2xl bg-emerald-950/30 border border-emerald-500/40">
+          <strong class="text-emerald-400 block mb-1 text-sm font-black">🟢 Zelená: VOLNÉ</strong>
+          Číslo je zcela volné. Nemá ho žádný hráč v tvém ročníku ani v ročnících o 1 až 2 roky starších a mladších. Můžeš si ho bez obav zvolit.
+        </div>
+        <div class="p-3.5 rounded-2xl bg-rose-950/30 border border-rose-500/40">
+          <strong class="text-rose-400 block mb-1 text-sm font-black">🔴 Červená: OBSAZENO</strong>
+          Číslo už má hráč v tvém ročníku nebo v některém z ročníků &plusmn;2 roky. Vyber si prosím jiné číslo, aby nedošlo ke kolizi dresů.
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div id="toast" class="fixed bottom-5 right-5 z-50 max-w-sm bg-slate-900 border border-cyan-500/50 text-white p-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 transform translate-y-24 opacity-0 transition-all duration-300 pointer-events-none">
+    <div id="toast-icon" class="text-emerald-400 text-lg">
+      <i class="fa-solid fa-circle-check"></i>
+    </div>
+    <div class="flex-1 text-xs font-semibold" id="toast-msg">Zpráva zkopírována!</div>
+  </div>
+
+  <footer class="mt-auto border-t border-slate-900 bg-slate-950 py-5 text-center text-xs text-slate-500">
+    <p>Florbalový klub &bull; Systém ověřování čísel dresů</p>
+  </footer>
+
+  <script>
+    // Realistický seznam obsazených čísel v klubu pro ověřování
+    // (Uchováváme přímo v kódu, aby stránka fungovala kdekoliv bez nutnosti nastavovat databázi)
+    const ROSTER_DATABASE = [
+      // Ročník 2010
+      { number: 8, year: 2010 },
+      { number: 17, year: 2010 },
+      { number: 99, year: 2010 },
+      
+      // Ročník 2011
+      { number: 11, year: 2011 },
+      { number: 24, year: 2011 },
+      { number: 66, year: 2011 },
+
+      // Ročník 2012
+      { number: 7, year: 2012 },
+      { number: 10, year: 2012 },
+      { number: 15, year: 2012 },
+      { number: 22, year: 2012 },
+      { number: 88, year: 2012 },
+
+      // Ročník 2013
+      { number: 7, year: 2013 }, // Kolize s 2012 #7
+      { number: 13, year: 2013 },
+      { number: 17, year: 2013 }, // Kolize s 2010 #17
+      { number: 1, year: 2013 },
+
+      // Ročník 2014
+      { number: 9, year: 2014 },
+      { number: 23, year: 2014 },
+      { number: 55, year: 2014 },
+
+      // Ročník 2015
+      { number: 5, year: 2015 },
+      { number: 18, year: 2015 },
+
+      // Ročník 2016
+      { number: 4, year: 2016 },
+      { number: 10, year: 2016 }
+    ];
+
+    /**
+     * Checks availability of a given number for a birth year with +/- 2 years buffer
+     */
+    function evaluateNumber(num, targetYear) {
+      const year = parseInt(targetYear, 10);
+      const number = parseInt(num, 10);
+
+      if (isNaN(number) || number < 1 || number > 99) {
+        return { status: 'invalid', message: 'Zadej číslo od 1 do 99.' };
+      }
+
+      // Check all occurrences in range [year - 2, year + 2]
+      const conflicts = ROSTER_DATABASE.filter(p => {
+        return p.number === number && Math.abs(p.year - year) <= 2;
+      });
+
+      if (conflicts.length > 0) {
+        const conflictingYears = [...new Set(conflicts.map(p => p.year))].sort().join(', ');
+        const hasExactMatch = conflicts.some(p => p.year === year);
+
+        let detailText = hasExactMatch 
+          ? `V tvém ročníku ${year} už toto číslo nosí jiný hráč. Zvol si prosím jiné číslo.`
+          : `Číslo už je obsazeno v ročníku ${conflictingYears}. Kvůli propojování kategorií nesmí mít stejné číslo nikdo z ročníků ${year - 2} až ${year + 2}.`;
+
+        return {
+          status: 'taken',
+          message: `Číslo #${number} je OBSAZENO ❌`,
+          detail: detailText,
+          conflicts: conflicts
+        };
+      }
+
+      return {
+        status: 'free',
+        message: `Číslo #${number} je zcela VOLNÉ! 🎉`,
+        detail: `Skvělá zpráva! Žádný hráč v tvém ročníku ${year} ani v ročnících ${year - 2}, ${year - 1}, ${year + 1}, ${year + 2} toto číslo nemá.`
+      };
+    }
+
+    /**
+     * Updates UI based on inputs
+     */
+    function runCheck() {
+      const yearSelect = document.getElementById('birth-year');
+      const numInput = document.getElementById('jersey-num');
+      const nameInput = document.getElementById('player-name');
+
+      const year = parseInt(yearSelect.value, 10);
+      let num = parseInt(numInput.value, 10);
+
+      if (isNaN(num)) num = 1;
+      if (num < 1) num = 1;
+      if (num > 99) num = 99;
+
+      const playerName = nameInput.value.trim() || 'HRÁČ';
+
+      // Update Jersey visual
+      document.getElementById('jersey-display-num').textContent = num;
+      document.getElementById('jersey-display-name').textContent = playerName;
+
+      // Update surrounding years text
+      document.getElementById('checked-years-hint').innerHTML = `
+        <i class="fa-solid fa-arrows-split-up-and-left text-cyan-400"></i>
+        <span>Kontrolujeme: <strong>${year - 2}, ${year - 1}, ${year}, ${year + 1}, ${year + 2}</strong></span>
+      `;
+
+      // Evaluate
+      const result = evaluateNumber(num, year);
+      const card = document.getElementById('status-card');
+
+      if (result.status === 'free') {
+        card.className = 'rounded-3xl p-5 border-2 bg-emerald-950/40 border-emerald-500/80 text-white shadow-xl transition-all duration-300';
+        card.innerHTML = `
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-emerald-500/20 text-emerald-400 text-2xl mb-2">
+            <i class="fa-solid fa-circle-check"></i>
+          </div>
+          <h4 class="text-xl font-black text-emerald-400">${result.message}</h4>
+          <p class="text-xs sm:text-sm text-slate-200 mt-1 max-w-sm mx-auto leading-relaxed">
+            ${result.detail}
+          </p>
+          <div class="mt-3 inline-block px-3 py-1 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 rounded-full text-xs font-bold">
+            Můžeš si ho vybrat na dres
+          </div>
+        `;
+      } else {
+        card.className = 'rounded-3xl p-5 border-2 bg-rose-950/40 border-rose-500/80 text-white shadow-xl transition-all duration-300';
+        card.innerHTML = `
+          <div class="inline-flex items-center justify-center w-12 h-12 rounded-2xl bg-rose-500/20 text-rose-400 text-2xl mb-2">
+            <i class="fa-solid fa-circle-xmark"></i>
+          </div>
+          <h4 class="text-xl font-black text-rose-400">${result.message}</h4>
+          <p class="text-xs sm:text-sm text-slate-200 mt-1 max-w-sm mx-auto leading-relaxed">
+            ${result.detail}
+          </p>
+          <div class="mt-3 inline-block px-3 py-1 bg-rose-500/20 text-rose-300 border border-rose-500/40 rounded-full text-xs font-bold">
+            Nelze zvolit &bull; Vyber si prosím jiné číslo
+          </div>
+        `;
+      }
+
+      renderQuickSuggestions(year);
+      renderGrid(year, num);
+    }
+
+    /**
+     * Stepper helper for number input
+     */
+    function adjustNumber(delta) {
+      const input = document.getElementById('jersey-num');
+      let val = parseInt(input.value, 10) || 1;
+      val += delta;
+      if (val < 1) val = 99;
+      if (val > 99) val = 1;
+      input.value = val;
+      runCheck();
+    }
+
+    /**
+     * Generates 5 popular completely free numbers as instant suggestions
+     */
+    function renderQuickSuggestions(year) {
+      const container = document.getElementById('quick-suggestions');
+      container.innerHTML = '';
+
+      const candidates = [3, 8, 12, 14, 19, 21, 25, 27, 33, 44, 71, 77, 81, 91, 97];
+      const completelyFree = [];
+
+      for (const n of candidates) {
+        const test = evaluateNumber(n, year);
+        if (test.status === 'free') {
+          completelyFree.push(n);
+        }
+        if (completelyFree.length >= 6) break;
+      }
+
+      completelyFree.forEach(n => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-cyan-500 hover:text-slate-950 text-cyan-300 font-mono font-bold text-xs border border-slate-700 hover:border-cyan-400 transition-all';
+        btn.textContent = `#${n}`;
+        btn.onclick = () => {
+          document.getElementById('jersey-num').value = n;
+          runCheck();
+        };
+        container.appendChild(btn);
+      });
+    }
+
+    /**
+     * Renders 1–99 full color-coded grid
+     */
+    function renderGrid(year, activeNumber) {
+      const container = document.getElementById('numbers-grid');
+      container.innerHTML = '';
+
+      for (let i = 1; i <= 99; i++) {
+        const res = evaluateNumber(i, year);
+        const btn = document.createElement('button');
+        btn.type = 'button';
+
+        let colorClasses = '';
+        if (res.status === 'free') {
+          colorClasses = 'bg-emerald-950/40 text-emerald-300 border-emerald-500/30 hover:bg-emerald-500 hover:text-slate-950';
+        } else {
+          colorClasses = 'bg-rose-950/40 text-rose-400 border-rose-500/40 opacity-70 hover:opacity-100 hover:bg-rose-500 hover:text-white';
+        }
+
+        // Selected active number border highlight
+        const activeRing = (i === activeNumber) ? 'ring-2 ring-cyan-400 scale-105 z-10 font-black' : '';
+
+        btn.className = `py-2 text-xs sm:text-sm font-mono font-bold rounded-xl border transition-all flex items-center justify-center ${colorClasses} ${activeRing}`;
+        btn.textContent = i;
+        btn.title = res.message;
+        
+        btn.onclick = () => {
+          document.getElementById('jersey-num').value = i;
+          runCheck();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+
+        container.appendChild(btn);
+      }
+    }
+
+    /**
+     * Copy ready-to-send WhatsApp / SMS text for the coach
+     */
+    function copyCoachMessage() {
+      const year = parseInt(document.getElementById('birth-year').value, 10);
+      const num = document.getElementById('jersey-num').value;
+      const name = document.getElementById('player-name').value.trim() || 'Hráč';
+      const check = evaluateNumber(num, year);
+
+      let text = `Dobrý den trenére, pro hráče ${name} (ročník ${year}) bychom rádi vybrali číslo dresu #${num}. V klubovém ověřovači má status: ${check.status === 'free' ? 'VOLNÉ (bez kolize v ročnících ' + (year - 2) + ' až ' + (year + 2) + ')' : 'OBSAZENÉ'}. Prosíme o rezervaci na novou sezónu. Děkujeme!`;
+
+      // Fallback copy
+      const tempArea = document.createElement('textarea');
+      tempArea.value = text;
+      document.body.appendChild(tempArea);
+      tempArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(tempArea);
+
+      showToast("Zpráva pro trenéra byla zkopírována do schránky!");
+    }
+
+    /**
+     * Simple non-intrusive toast notification
+     */
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-msg');
+      toastMsg.textContent = message;
+
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-24', 'opacity-0');
+      }, 3000);
+    }
+
+    // Initialize on page load
+    window.addEventListener('DOMContentLoaded', () => {
+      runCheck();
+    });
+  </script>
+</body>
+</html>
